@@ -1,0 +1,19 @@
+models:
+  - name: fct_orders
+    columns:
+      - name: order_key
+        tests:
+          - unique
+          - not_null
+          # checks every order_key in fct_orders maps to an existing order_key in stg_tpch_orders
+          - relationships:
+              arguments:
+                to: ref('stg_tpch_orders')
+                field: order_key
+                severity: warn
+      - name: status_code
+        tests:
+          # Test to only accept specific values for status_code column
+          - accepted_values:
+              arguments:
+                values: ["P", "O", "F"]
